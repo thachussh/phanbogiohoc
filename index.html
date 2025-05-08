@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân bổ các loại giờ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4 text-center">Phân Bổ Các Loại Giờ</h1>
+
+        <!-- Phần nhập liệu -->
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold mb-2">Thông tin học phần</h2>
+            <div class="mb-4">
+                <label class="block text-lg font-bold text-gray-700">Số tín chỉ:</label>
+                <input type="number" id="totalCredits" min="1" value="1" class="mt-1 block w-full sm:w-1/4 border border-gray-300 rounded-md p-2 text-lg" oninput="updateTable()">
+            </div>
+            <div class="ml-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Lý thuyết (TC):</label>
+                    <input type="number" id="theoryCredits" min="0" value="0" class="mt-1 block w-2/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
+                </div>
+                <div class="mt-2">
+                    <label class="block text-sm font-medium text-gray-700">TH/TN/TL (TC):</label>
+                    <input type="number" id="practicalCredits" min="0" value="0" class="mt-1 block w-2/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
+                </div>
+                <div class="mt-2">
+                    <label class="block text-sm font-medium text-gray-700">Tự học (giờ):</label>
+                    <input type="number" id="selfStudyHours" min="0" value="0" class="mt-1 block w-2/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
+                </div>
+            </div>
+            <p id="errorMessage" class="text-red-500 mt-2 hidden">Lỗi: Tổng tín chỉ không khớp hoặc số giờ tự học không hợp lệ!</p>
+        </div>
+
+        <!-- Bảng phân bổ giờ -->
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Phân bổ cụ thể</h2>
+            <table class="min-w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border border-gray-300 p-2 text-left">Phân bổ các loại giờ</th>
+                        <th class="border border-gray-300 p-2 text-center">Lý thuyết</th>
+                        <th class="border border-gray-300 p-2 text-center">TH/TN/TL</th>
+                        <th class="border border-gray-300 p-2 text-center">Tự học, tự nghiên cứu</th>
+                        <th class="border border-gray-300 p-2 text-center">Tổng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border border-gray-300 p-2 font-semibold" colspan="5">Số giờ giảng dạy trực diện, trực tuyến</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Trực diện (tại phòng học)</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="directTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="directPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="directSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="directTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Trực tuyến (đồng bộ hoặc không đồng bộ)</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="onlineTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="onlinePractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="onlineSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="onlineTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">LMS (có hướng dẫn)</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuideTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuidePractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuideSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="lmsGuideTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Đi thực tế, trải nghiệm</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="fieldTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="fieldPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="fieldSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="fieldTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 font-semibold" colspan="5">Số giờ tự học và khác</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Tự học, tự nghiên cứu</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="selfStudyTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="selfStudyPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="selfStudySelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="selfStudyTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Làm việc nhóm</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="groupTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Hoạt động học tập trên LMS</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsActivityTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsActivityPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsActivitySelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="lmsActivityTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 pl-4">Ôn thi, dự thi, kiểm tra</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="examTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="examPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="examSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="examTotal">0</td>
+                    </tr>
+                    <tr class="bg-gray-100 font-semibold">
+                        <td class="border border-gray-300 p-2">Tổng</td>
+                        <td class="border border-gray-300 p-2 text-center" id="totalTheory">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="totalPractical">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="totalSelfStudy">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="totalAll">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-4 flex justify-center">
+                <button onclick="downloadWord()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tải file Word</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hàm tính toán khi thay đổi ô nhập liệu trên cùng
+        function updateTable() {
+            // Lấy giá trị từ input
+            const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
+            const theoryCredits = parseInt(document.getElementById('theoryCredits').value) || 0;
+            const practicalCredits = parseInt(document.getElementById('practicalCredits').value) || 0;
+            const selfStudyHours = parseInt(document.getElementById('selfStudyHours').value) || 0;
+
+            // Tính toán số giờ theo quy định
+            const theoryHours = theoryCredits * 15; // 15 giờ/tín chỉ lý thuyết
+            const practicalHours = practicalCredits * 30; // 30 giờ/tín chỉ thực hành
+            const totalHours = totalCredits * 50; // 50 giờ học tập định mức/tín chỉ
+            const requiredSelfStudy = totalHours - theoryHours - practicalHours; // Giờ tự học cần thiết
+
+            // Kiểm tra ràng buộc
+            const errorMessage = document.getElementById('errorMessage');
+            if (theoryCredits + practicalCredits !== totalCredits || selfStudyHours < requiredSelfStudy) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits}) hoặc số giờ tự học (${selfStudyHours}) không đủ (${requiredSelfStudy} giờ cần thiết)!`;
+                // Đặt giá trị mặc định trong bảng
+                const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
+                fields.forEach(field => {
+                    document.getElementById(`${field}Theory`).value = 0;
+                    document.getElementById(`${field}Practical`).value = 0;
+                    document.getElementById(`${field}SelfStudy`).value = 0;
+                    document.getElementById(`${field}Total`).textContent = 0;
+                });
+                document.getElementById('totalTheory').textContent = 0;
+                document.getElementById('totalPractical').textContent = 0;
+                document.getElementById('totalSelfStudy').textContent = 0;
+                document.getElementById('totalAll').textContent = 0;
+                return;
+            } else {
+                errorMessage.classList.add('hidden');
+            }
+
+            // Phân bổ giờ (gợi ý)
+            // Trực diện: Phân bổ toàn bộ giờ lý thuyết và thực hành
+            document.getElementById('directTheory').value = theoryHours;
+            document.getElementById('directPractical').value = practicalHours;
+            document.getElementById('directSelfStudy').value = 0;
+
+            // Trực tuyến: Phân bổ 0 giờ
+            document.getElementById('onlineTheory').value = 0;
+            document.getElementById('onlinePractical').value = 0;
+            document.getElementById('onlineSelfStudy').value = 0;
+
+            // LMS (có hướng dẫn): Phân bổ 0 giờ
+            document.getElementById('lmsGuideTheory').value = 0;
+            document.getElementById('lmsGuidePractical').value = 0;
+            document.getElementById('lmsGuideSelfStudy').value = 0;
+
+            // Đi thực tế: Dành cho thực hành, giả sử 0 giờ
+            document.getElementById('fieldTheory').value = 0;
+            document.getElementById('fieldPractical').value = 0;
+            document.getElementById('fieldSelfStudy').value = 0;
+
+            // Tự học, tự nghiên cứu: 60% giờ tự học
+            document.getElementById('selfStudyTheory').value = 0;
+            document.getElementById('selfStudyPractical').value = 0;
+            document.getElementById('selfStudySelfStudy').value = Math.round(selfStudyHours * 0.6);
+
+            // Làm việc nhóm: 10% giờ tự học
+            document.getElementById('groupTheory').value = 0;
+            document.getElementById('groupPractical').value = 0;
+            document.getElementById('groupSelfStudy').value = Math.round(selfStudyHours * 0.1);
+
+            // Hoạt động học tập trên LMS: 10% giờ tự học
+            document.getElementById('lmsActivityTheory').value = 0;
+            document.getElementById('lmsActivityPractical').value = 0;
+            document.getElementById('lmsActivitySelfStudy').value = Math.round(selfStudyHours * 0.1);
+
+            // Ôn thi, dự thi, kiểm tra: 20% giờ tự học
+            document.getElementById('examTheory').value = 0;
+            document.getElementById('examPractical').value = 0;
+            const selfStudySelfStudy = parseInt(document.getElementById('selfStudySelfStudy').value) || 0;
+            const groupSelfStudy = parseInt(document.getElementById('groupSelfStudy').value) || 0;
+            const lmsActivitySelfStudy = parseInt(document.getElementById('lmsActivitySelfStudy').value) || 0;
+            document.getElementById('examSelfStudy').value = selfStudyHours - selfStudySelfStudy - groupSelfStudy - lmsActivitySelfStudy;
+
+            // Cập nhật tổng
+            updateTotals();
+        }
+
+        // Hàm tính toán khi thay đổi giá trị trong bảng
+        function updateFromTable() {
+            // Lấy giá trị từ input
+            const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
+            const theoryCredits = parseInt(document.getElementById('theoryCredits').value) || 0;
+            const practicalCredits = parseInt(document.getElementById('practicalCredits').value) || 0;
+            const selfStudyHours = parseInt(document.getElementById('selfStudyHours').value) || 0;
+
+            // Tính toán số giờ theo quy định
+            const theoryHours = theoryCredits * 15; // 15 giờ/tín chỉ lý thuyết
+            const practicalHours = practicalCredits * 30; // 30 giờ/tín chỉ thực hành
+            const totalHours = totalCredits * 50; // 50 giờ học tập định mức/tín chỉ
+            const requiredSelfStudy = totalHours - theoryHours - practicalHours; // Giờ tự học cần thiết
+
+            // Lấy tất cả giá trị trong bảng
+            const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
+            let totalTheory = 0;
+            let totalPractical = 0;
+            let totalSelfStudy = 0;
+
+            fields.forEach(field => {
+                const theory = parseInt(document.getElementById(`${field}Theory`).value) || 0;
+                const practical = parseInt(document.getElementById(`${field}Practical`).value) || 0;
+                const selfStudy = parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+                totalTheory += theory;
+                totalPractical += practical;
+                totalSelfStudy += selfStudy;
+                document.getElementById(`${field}Total`).textContent = theory + practical + selfStudy;
+            });
+
+            // Cập nhật tổng
+            document.getElementById('totalTheory').textContent = totalTheory;
+            document.getElementById('totalPractical').textContent = totalPractical;
+            document.getElementById('totalSelfStudy').textContent = totalSelfStudy;
+            document.getElementById('totalAll').textContent = totalTheory + totalPractical + totalSelfStudy;
+
+            // Kiểm tra ràng buộc
+            const errorMessage = document.getElementById('errorMessage');
+            if (theoryCredits + practicalCredits !== totalCredits ||
+                totalTheory !== theoryHours ||
+                totalPractical !== practicalHours ||
+                totalSelfStudy !== selfStudyHours ||
+                (totalTheory + totalPractical + totalSelfStudy) !== totalHours) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.textContent = `Lỗi: Tổng giờ không khớp! Lý thuyết: ${totalTheory}/${theoryHours}, TH/TN/TL: ${totalPractical}/${practicalHours}, Tự học: ${totalSelfStudy}/${selfStudyHours}, Tổng: ${totalTheory + totalPractical + totalSelfStudy}/${totalHours}`;
+            } else {
+                errorMessage.classList.add('hidden');
+            }
+        }
+
+        // Hàm tính tổng
+        function updateTotals() {
+            const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
+            let totalTheory = 0;
+            let totalPractical = 0;
+            let totalSelfStudy = 0;
+
+            fields.forEach(field => {
+                const theory = parseInt(document.getElementById(`${field}Theory`).value) || 0;
+                const practical = parseInt(document.getElementById(`${field}Practical`).value) || 0;
+                const selfStudy = parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+                totalTheory += theory;
+                totalPractical += practical;
+                totalSelfStudy += selfStudy;
+                document.getElementById(`${field}Total`).textContent = theory + practical + selfStudy;
+            });
+
+            document.getElementById('totalTheory').textContent = totalTheory;
+            document.getElementById('totalPractical').textContent = totalPractical;
+            document.getElementById('totalSelfStudy').textContent = totalSelfStudy;
+            document.getElementById('totalAll').textContent = totalTheory + totalPractical + totalSelfStudy;
+        }
+
+        // Hàm tải file Word
+        function downloadWord() {
+            const { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, TextRun, BorderStyle } = docx;
+
+            // Lấy dữ liệu từ input
+            const totalCredits = document.getElementById('totalCredits').value;
+            const theoryCredits = document.getElementById('theoryCredits').value;
+            const practicalCredits = document.getElementById('practicalCredits').value;
+            const selfStudyHours = document.getElementById('selfStudyHours').value;
+
+            // Tạo tiêu đề
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: "Phân Bổ Các Loại Giờ",
+                                    bold: true,
+                                    size: 28,
+                                    font: "Times New Roman"
+                                })
+                            ],
+                            alignment: "center",
+                            spacing: { after: 200 }
+                        }),
+                        new Paragraph({
+                            children: [
+                                new TextRun({
+                                    text: `Số tín chỉ: ${totalCredits}, trong đó: Lý thuyết: ${theoryCredits} TC, TH/TN/TL: ${practicalCredits} TC, Tự học: ${selfStudyHours} giờ`,
+                                    size: 24,
+                                    font: "Times New Roman"
+                                })
+                            ],
+                            spacing: { after: 300 }
+                        }),
+                    ]
+                }]
+            });
+
+            // Tạo bảng
+            const table = new Table({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                borders: {
+                    top: { style: BorderStyle.SINGLE, size: 1 },
+                    bottom: { style: BorderStyle.SINGLE, size: 1 },
+                    left: { style: BorderStyle.SINGLE, size: 1 },
+                    right: { style: BorderStyle.SINGLE, size: 1 },
+                    insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
+                    insideVertical: { style: BorderStyle.SINGLE, size: 1 }
+                },
+                rows: [
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Phân bổ các loại giờ", bold: true })] }),
+                            new TableCell({ children: [new Paragraph({ text: "Lý thuyết", bold: true, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: "TH/TN/TL", bold: true, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: "Tự học, tự nghiên cứu", bold: true, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: "Tổng", bold: true, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ columnSpan: 5, children: [new Paragraph({ text: "Số giờ giảng dạy trực diện, trực tuyến", bold: true })] })
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Trực diện (tại phòng học)" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directPractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directSelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Trực tuyến (đồng bộ hoặc không đồng bộ)" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlinePractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineSelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "LMS (có hướng dẫn)" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuidePractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideSelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Đi thực tế, trải nghiệm" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldPractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldSelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ columnSpan: 5, children: [new Paragraph({ text: "Số giờ tự học và khác", bold: true })] })
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Tự học, tự nghiên cứu" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyPractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudySelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Làm việc nhóm" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupPractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupSelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Hoạt động học tập trên LMS" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityPractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivitySelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Ôn thi, dự thi, kiểm tra" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examTheory').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examPractical').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examSelfStudy').value, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examTotal').textContent, alignment: "center" })] }),
+                        ]
+                    }),
+                    new TableRow({
+                        children: [
+                            new TableCell({ children: [new Paragraph({ text: "Tổng", bold: true })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalTheory').textContent, bold: true, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalPractical').textContent, bold: true, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalSelfStudy').textContent, bold: true, alignment: "center" })] }),
+                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalAll').textContent, bold: true, alignment: "center" })] }),
+                        ]
+                    }),
+                ]
+            });
+
+            doc.sections[0].children.push(table);
+
+            // Tạo và tải file Word
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, "PhanBoCacLoaiGio.docx");
+            });
+        }
+
+        // Khởi tạo bảng khi tải trang
+        window.onload = updateTable;
+    </script>
+</body>
+</html>
