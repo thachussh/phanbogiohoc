@@ -287,167 +287,176 @@
 
         // Hàm tải file Word
         function downloadWord() {
-            const { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, TextRun, BorderStyle } = docx;
+    try {
+        const { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, TextRun, BorderStyle } = docx;
 
-            // Lấy dữ liệu từ input
-            const totalCredits = document.getElementById('totalCredits').value;
-            const theoryCredits = document.getElementById('theoryCredits').value;
-            const practicalCredits = document.getElementById('practicalCredits').value;
-            const selfStudyHours = document.getElementById('selfStudyHours').value;
+        // Lấy dữ liệu từ input
+        const totalCredits = document.getElementById('totalCredits').value;
+        const theoryCredits = document.getElementById('theoryCredits').value;
+        const practicalCredits = document.getElementById('practicalCredits').value;
+        const selfStudyHours = document.getElementById('selfStudyHours').value;
 
-            // Tạo tiêu đề
-            const doc = new Document({
-                sections: [{
-                    properties: {},
-                    children: [
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: "Phân Bổ Các Loại Giờ",
-                                    bold: true,
-                                    size: 28,
-                                    font: "Times New Roman"
-                                })
-                            ],
-                            alignment: "center",
-                            spacing: { after: 200 }
-                        }),
-                        new Paragraph({
-                            children: [
-                                new TextRun({
-                                    text: `Số tín chỉ: ${totalCredits}, trong đó: Lý thuyết: ${theoryCredits} TC, TH/TN/TL: ${practicalCredits} TC, Tự học: ${selfStudyHours} giờ`,
-                                    size: 24,
-                                    font: "Times New Roman"
-                                })
-                            ],
-                            spacing: { after: 300 }
-                        }),
-                    ]
-                }]
-            });
-
-            // Tạo bảng
-            const table = new Table({
-                width: { size: 100, type: WidthType.PERCENTAGE },
-                borders: {
-                    top: { style: BorderStyle.SINGLE, size: 1 },
-                    bottom: { style: BorderStyle.SINGLE, size: 1 },
-                    left: { style: BorderStyle.SINGLE, size: 1 },
-                    right: { style: BorderStyle.SINGLE, size: 1 },
-                    insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
-                    insideVertical: { style: BorderStyle.SINGLE, size: 1 }
-                },
-                rows: [
-                    new TableRow({
+        // Tạo tiêu đề
+        const doc = new Document({
+            sections: [{
+                properties: {},
+                children: [
+                    new Paragraph({
                         children: [
-                            new TableCell({ children: [new Paragraph({ text: "Phân bổ các loại giờ", bold: true })] }),
-                            new TableCell({ children: [new Paragraph({ text: "Lý thuyết", bold: true, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: "TH/TN/TL", bold: true, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: "Tự học, tự nghiên cứu", bold: true, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: "Tổng", bold: true, alignment: "center" })] }),
-                        ]
+                            new TextRun({
+                                text: "Phân Bổ Các Loại Giờ",
+                                bold: true,
+                                size: 28,
+                                font: "Times New Roman"
+                            })
+                        ],
+                        alignment: "center",
+                        spacing: { after: 200 }
                     }),
-                    new TableRow({
+                    new Paragraph({
                         children: [
-                            new TableCell({ columnSpan: 5, children: [new Paragraph({ text: "Số giờ giảng dạy trực diện, trực tuyến", bold: true })] })
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Trực diện (tại phòng học)" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directPractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directSelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('directTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Trực tuyến (đồng bộ hoặc không đồng bộ)" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlinePractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineSelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "LMS (có hướng dẫn)" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuidePractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideSelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Đi thực tế, trải nghiệm" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldPractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldSelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ columnSpan: 5, children: [new Paragraph({ text: "Số giờ tự học và khác", bold: true })] })
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Tự học, tự nghiên cứu" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyPractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudySelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Làm việc nhóm" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupPractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupSelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('groupTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Hoạt động học tập trên LMS" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityPractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivitySelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Ôn thi, dự thi, kiểm tra" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examTheory').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examPractical').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examSelfStudy').value, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('examTotal').textContent, alignment: "center" })] }),
-                        ]
-                    }),
-                    new TableRow({
-                        children: [
-                            new TableCell({ children: [new Paragraph({ text: "Tổng", bold: true })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalTheory').textContent, bold: true, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalPractical').textContent, bold: true, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalSelfStudy').textContent, bold: true, alignment: "center" })] }),
-                            new TableCell({ children: [new Paragraph({ text: document.getElementById('totalAll').textContent, bold: true, alignment: "center" })] }),
-                        ]
+                            new TextRun({
+                                text: `Số tín chỉ: ${totalCredits}, trong đó: Lý thuyết: ${theoryCredits} TC, TH/TN/TL: ${practicalCredits} TC, Tự học: ${selfStudyHours} giờ`,
+                                size: 24,
+                                font: "Times New Roman"
+                            })
+                        ],
+                        spacing: { after: 300 }
                     }),
                 ]
-            });
+            }]
+        });
 
-            doc.sections[0].children.push(table);
+        // Tạo bảng
+        const table = new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            borders: {
+                top: { style: BorderStyle.SINGLE, size: 1 },
+                bottom: { style: BorderStyle.SINGLE, size: 1 },
+                left: { style: BorderStyle.SINGLE, size: 1 },
+                right: { style: BorderStyle.SINGLE, size: 1 },
+                insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
+                insideVertical: { style: BorderStyle.SINGLE, size: 1 }
+            },
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Phân bổ các loại giờ", bold: true })] }),
+                        new TableCell({ children: [new Paragraph({ text: "Lý thuyết", bold: true, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: "TH/TN/TL", bold: true, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: "Tự học, tự nghiên cứu", bold: true, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: "Tổng", bold: true, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ columnSpan: 5, children: [new Paragraph({ text: "Số giờ giảng dạy trực diện, trực tuyến", bold: true })] })
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Trực diện (tại phòng học)" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('directTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('directPractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('directSelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('directTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Trực tuyến (đồng bộ hoặc không đồng bộ)" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('onlinePractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineSelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('onlineTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "LMS (có hướng dẫn)" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuidePractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideSelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsGuideTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Đi thực tế, trải nghiệm" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldPractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldSelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('fieldTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ columnSpan: 5, children: [new Paragraph({ text: "Số giờ tự học và khác", bold: true })] })
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Tự học, tự nghiên cứu" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyPractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudySelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('selfStudyTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Làm việc nhóm" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('groupTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('groupPractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('groupSelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('groupTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Hoạt động học tập trên LMS" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityPractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivitySelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('lmsActivityTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Ôn thi, dự thi, kiểm tra" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('examTheory').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('examPractical').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('examSelfStudy').value, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('examTotal').textContent, alignment: "center" })] }),
+                    ]
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({ children: [new Paragraph({ text: "Tổng", bold: true })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('totalTheory').textContent, bold: true, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('totalPractical').textContent, bold: true, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('totalSelfStudy').textContent, bold: true, alignment: "center" })] }),
+                        new TableCell({ children: [new Paragraph({ text: document.getElementById('totalAll').textContent, bold: true, alignment: "center" })] }),
+                    ]
+                }),
+            ]
+        });
 
-            // Tạo và tải file Word
-            Packer.toBlob(doc).then(blob => {
-                saveAs(blob, "PhanBoCacLoaiGio.docx");
-            });
-        }
+        doc.sections[0].children.push(table);
+
+        // Tạo và tải file Word
+        Packer.toBlob(doc).then(blob => {
+            saveAs(blob, "PhanBoCacLoaiGio.docx");
+            alert("File Word đã được tải thành công!");
+        }).catch(err => {
+            console.error("Lỗi khi tạo file Word:", err);
+            alert("Có lỗi xảy ra khi tạo file Word. Vui lòng kiểm tra Console để biết chi tiết.");
+        });
+    } catch (error) {
+        console.error("Lỗi trong hàm downloadWord:", error);
+        alert("Có lỗi xảy ra trong hàm downloadWord. Vui lòng kiểm tra Console để biết chi tiết.");
+    }
+}
 
         // Khởi tạo bảng khi tải trang
         window.onload = updateTable;
