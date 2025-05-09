@@ -25,7 +25,7 @@
                     <input type="number" id="theoryCredits" min="0" value="0" class="mt-1 block w-1/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
                 </div>
                 <div class="mt-2">
-                    <label class="block text-sm font-medium text-gray-7"TH/TN/TL (TC):</label>
+                    <label class="block text-sm font-medium text-gray-700">Thực hành/Thí nghiệm/Thảo luận (TC):</label>
                     <input type="number" id="practicalCredits" min="0" value="0" class="mt-1 block w-1/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
                 </div>
                 <div class="mt-2">
@@ -45,7 +45,7 @@
                     <tr class="bg-gray-200">
                         <th class="border border-gray-300 p-2 text-left">Phân bổ các loại giờ</th>
                         <th class="border border-gray-300 p-2 text-center">Lý thuyết</th>
-                        <th class="border border-gray-300 p-2 text-center">TH/TN/TL</th>
+                        <th class="border border-gray-300 p-2 text-center">Thực hành/Thí nghiệm/Thảo luận</th>
                         <th class="border border-gray-300 p-2 text-center">Tự học, tự nghiên cứu</th>
                         <th class="border border-gray-300 p-2 text-center">Tổng (giờ)</th>
                     </tr>
@@ -107,7 +107,7 @@
                         <td class="border border-gray-300 p-2 text-center" id="selfStudyTotal">0</td>
                     </tr>
                     <tr>
-                        <td class="border border-gray-300 p-2 pl-4">Làm việc nhóm</td>
+                        <td class="block border border-gray-300 p-2 pl-4">Làm việc nhóm</td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
@@ -369,13 +369,13 @@
                     </head>
                     <body>
                         <h1>Phân Bổ Các Loại Giờ</h1>
-                        <p>Số tín chỉ: ${document.getElementById('totalCredits').value || 0}, trong đó: Lý thuyết: ${document.getElementById('theoryCredits').value || 0} TC, TH/TN/TL: ${document.getElementById('practicalCredits').value || 0} TC, Tự học: ${document.getElementById('selfStudyHours').textContent || 0} tiết</p>
+                        <p>Số tín chỉ: ${document.getElementById('totalCredits').value || 0}, trong đó: Lý thuyết: ${document.getElementById('theoryCredits').value || 0} TC, Thực hành/Thí nghiệm/Thảo luận: ${document.getElementById('practicalCredits').value || 0} TC, Tự học: ${document.getElementById('selfStudyHours').textContent || 0} tiết</p>
                         <table>
                             <thead>
                                 <tr>
                                     <th>Phân bổ các loại giờ</th>
                                     <th>Lý thuyết</th>
-                                    <th>TH/TN/TL</th>
+                                    <th>Thực hành/Thí nghiệm/Thảo luận</th>
                                     <th>Tự học, tự nghiên cứu</th>
                                     <th>Tổng (giờ)</th>
                                 </tr>
