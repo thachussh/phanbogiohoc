@@ -25,7 +25,7 @@
                     <input type="number" id="theoryCredits" min="0" value="0" class="mt-1 block w-1/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
                 </div>
                 <div class="mt-2">
-                    <label class="block text-sm font-medium text-gray-700">TH/TN/TL (TC):</label>
+                    <label class="block text-sm font-medium text-gray-7"TH/TN/TL (TC):</label>
                     <input type="number" id="practicalCredits" min="0" value="0" class="mt-1 block w-1/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
                 </div>
                 <div class="mt-2">
@@ -47,7 +47,7 @@
                         <th class="border border-gray-300 p-2 text-center">Lý thuyết</th>
                         <th class="border border-gray-300 p-2 text-center">TH/TN/TL</th>
                         <th class="border border-gray-300 p-2 text-center">Tự học, tự nghiên cứu</th>
-                        <th class="border border-gray-300 p-2 text-center">Tổng</th>
+                        <th class="border border-gray-300 p-2 text-center">Tổng (giờ)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,25 +163,7 @@
             if (theoryCredits + practicalCredits !== totalCredits) {
                 errorMessage.classList.remove('hidden');
                 errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits})!`;
-                const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
-                fields.forEach(field => {
-                    document.getElementById(`${field}Theory`).value = 0;
-                    document.getElementById(`${field}Practical`).value = 0;
-                    document.getElementById(`${field}SelfStudy`).value = 0;
-                    document.getElementById(`${field}Total`).textContent = 0;
-                });
-                document.getElementById('directOnlineTheoryTotal').textContent = 0;
-                document.getElementById('directOnlinePracticalTotal').textContent = 0;
-                document.getElementById('directOnlineSelfStudyTotal').textContent = 0;
-                document.getElementById('directOnlineTotal').textContent = 0;
-                document.getElementById('selfOtherTheoryTotal').textContent = 0;
-                document.getElementById('selfOtherPracticalTotal').textContent = 0;
-                document.getElementById('selfOtherSelfStudyTotal').textContent = 0;
-                document.getElementById('selfOtherTotal').textContent = 0;
-                document.getElementById('totalTheory').textContent = 0;
-                document.getElementById('totalPractical').textContent = 0;
-                document.getElementById('totalSelfStudy').textContent = 0;
-                document.getElementById('totalAll').textContent = 0;
+                resetTable();
                 document.getElementById('selfStudyHours').textContent = 0;
                 document.getElementById('hoursNeeded').textContent = 0;
                 document.getElementById('totalHours').textContent = totalHours;
@@ -236,15 +218,7 @@
             const theoryCredits = parseInt(document.getElementById('theoryCredits').value) || 0;
             const practicalCredits = parseInt(document.getElementById('practicalCredits').value) || 0;
 
-            const theorySections = theoryCredits * 15;
-            const practicalSections = practicalCredits * 30;
             const totalHours = totalCredits * 50;
-            const selfStudySections = totalCredits * 30; // 30 tiết/tín chỉ
-            const selfStudyHours = selfStudySections * 50 / 60;
-
-            const teachingHours = (theorySections * 50 / 60) + (practicalSections * 50 / 60);
-            const currentTotalHours = teachingHours + selfStudyHours;
-            const hoursNeeded = Math.max(0, totalHours - currentTotalHours);
 
             const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
             let totalTheory = 0, totalPractical = 0, totalSelfStudy = 0;
@@ -254,7 +228,8 @@
                 const practical = parseInt(document.getElementById(`${field}Practical`).value) || 0;
                 const selfStudy = parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
 
-                const total = (theory * 50 / 60) + (practical * 50 / 60) + selfStudy;
+                // Quy đổi số tiết sang giờ: tiết * 50 / 60
+                const total = (theory * 50 / 60) + (practical * 50 / 60) + (selfStudy * 50 / 60);
                 document.getElementById(`${field}Total`).textContent = Math.round(total);
 
                 totalTheory += theory;
@@ -285,20 +260,90 @@
             const directOnlineTheory = (parseInt(document.getElementById('directTheory').value) || 0) + (parseInt(document.getElementById('onlineTheory').value) || 0) + (parseInt(document.getElementById('fieldTheory').value) || 0);
             const directOnlinePractical = (parseInt(document.getElementById('directPractical').value) || 0) + (parseInt(document.getElementById('onlinePractical').value) || 0) + (parseInt(document.getElementById('fieldPractical').value) || 0);
             const directOnlineSelfStudy = (parseInt(document.getElementById('directSelfStudy').value) || 0) + (parseInt(document.getElementById('onlineSelfStudy').value) || 0) + (parseInt(document.getElementById('fieldSelfStudy').value) || 0);
-            const directOnlineTotal = Math.round((directOnlineTheory * 50 / 60) + (directOnlinePractical * 50 / 60) + directOnlineSelfStudy);
+            const directOnlineTotal = (directOnlineTheory * 50 / 60) + (directOnlinePractical * 50 / 60) + (directOnlineSelfStudy * 50 / 60);
             document.getElementById('directOnlineTheoryTotal').textContent = directOnlineTheory;
             document.getElementById('directOnlinePracticalTotal').textContent = directOnlinePractical;
             document.getElementById('directOnlineSelfStudyTotal').textContent = directOnlineSelfStudy;
-            document.getElementById('directOnlineTotal').textContent = directOnlineTotal;
+            document.getElementById('directOnlineTotal').textContent = Math.round(directOnlineTotal);
 
             const selfOtherTheory = (parseInt(document.getElementById('selfStudyTheory').value) || 0) + (parseInt(document.getElementById('groupTheory').value) || 0) + (parseInt(document.getElementById('lmsActivityTheory').value) || 0) + (parseInt(document.getElementById('examTheory').value) || 0);
             const selfOtherPractical = (parseInt(document.getElementById('selfStudyPractical').value) || 0) + (parseInt(document.getElementById('groupPractical').value) || 0) + (parseInt(document.getElementById('lmsActivityPractical').value) || 0) + (parseInt(document.getElementById('examPractical').value) || 0);
             const selfOtherSelfStudy = (parseInt(document.getElementById('selfStudySelfStudy').value) || 0) + (parseInt(document.getElementById('groupSelfStudy').value) || 0) + (parseInt(document.getElementById('lmsActivitySelfStudy').value) || 0) + (parseInt(document.getElementById('examSelfStudy').value) || 0);
-            const selfOtherTotal = Math.round((selfOtherTheory * 50 / 60) + (selfOtherPractical * 50 / 60) + selfOtherSelfStudy);
+            const selfOtherTotal = (selfOtherTheory * 50 / 60) + (selfOtherPractical * 50 / 60) + (selfOtherSelfStudy * 50 / 60);
             document.getElementById('selfOtherTheoryTotal').textContent = selfOtherTheory;
             document.getElementById('selfOtherPracticalTotal').textContent = selfOtherPractical;
             document.getElementById('selfOtherSelfStudyTotal').textContent = selfOtherSelfStudy;
-            document.getElementById('selfOtherTotal').textContent = selfOtherTotal;
+            document.getElementById('selfOtherTotal').textContent = Math.round(selfOtherTotal);
+        }
+
+        // Hàm reset bảng
+        function resetTable() {
+            const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
+            fields.forEach(field => {
+                document.getElementById(`${field}Theory`).value = 0;
+                document.getElementById(`${field}Practical`).value = 0;
+                document.getElementById(`${field}SelfStudy`).value = 0;
+                document.getElementById(`${field}Total`).textContent = 0;
+            });
+            document.getElementById('directOnlineTheoryTotal').textContent = 0;
+            document.getElementById('directOnlinePracticalTotal').textContent = 0;
+            document.getElementById('directOnlineSelfStudyTotal').textContent = 0;
+            document.getElementById('directOnlineTotal').textContent = 0;
+            document.getElementById('selfOtherTheoryTotal').textContent = 0;
+            document.getElementById('selfOtherPracticalTotal').textContent = 0;
+            document.getElementById('selfOtherSelfStudyTotal').textContent = 0;
+            document.getElementById('selfOtherTotal').textContent = 0;
+            document.getElementById('totalTheory').textContent = 0;
+            document.getElementById('totalPractical').textContent = 0;
+            document.getElementById('totalSelfStudy').textContent = 0;
+            document.getElementById('totalAll').textContent = 0;
+        }
+
+        // Hàm tính tổng
+        function updateTotals() {
+            const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
+            const totalHours = totalCredits * 50;
+
+            const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
+            let totalTheory = 0, totalPractical = 0, totalSelfStudy = 0;
+
+            fields.forEach(field => {
+                const theory = parseInt(document.getElementById(`${field}Theory`).value) || 0;
+                const practical = parseInt(document.getElementById(`${field}Practical`).value) || 0;
+                const selfStudy = parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+
+                const total = (theory * 50 / 60) + (practical * 50 / 60) + (selfStudy * 50 / 60);
+                document.getElementById(`${field}Total`).textContent = Math.round(total);
+
+                totalTheory += theory;
+                totalPractical += practical;
+                totalSelfStudy += selfStudy;
+            });
+
+            document.getElementById('totalTheory').textContent = totalTheory;
+            document.getElementById('totalPractical').textContent = totalPractical;
+            document.getElementById('totalSelfStudy').textContent = totalSelfStudy;
+
+            const totalHoursCalculated = (totalTheory * 50 / 60) + (totalPractical * 50 / 60) + (totalSelfStudy * 50 / 60);
+            document.getElementById('totalAll').textContent = Math.round(totalHoursCalculated);
+
+            const directOnlineTheory = (parseInt(document.getElementById('directTheory').value) || 0) + (parseInt(document.getElementById('onlineTheory').value) || 0) + (parseInt(document.getElementById('fieldTheory').value) || 0);
+            const directOnlinePractical = (parseInt(document.getElementById('directPractical').value) || 0) + (parseInt(document.getElementById('onlinePractical').value) || 0) + (parseInt(document.getElementById('fieldPractical').value) || 0);
+            const directOnlineSelfStudy = (parseInt(document.getElementById('directSelfStudy').value) || 0) + (parseInt(document.getElementById('onlineSelfStudy').value) || 0) + (parseInt(document.getElementById('fieldSelfStudy').value) || 0);
+            const directOnlineTotal = (directOnlineTheory * 50 / 60) + (directOnlinePractical * 50 / 60) + (directOnlineSelfStudy * 50 / 60);
+            document.getElementById('directOnlineTheoryTotal').textContent = directOnlineTheory;
+            document.getElementById('directOnlinePracticalTotal').textContent = directOnlinePractical;
+            document.getElementById('directOnlineSelfStudyTotal').textContent = directOnlineSelfStudy;
+            document.getElementById('directOnlineTotal').textContent = Math.round(directOnlineTotal);
+
+            const selfOtherTheory = (parseInt(document.getElementById('selfStudyTheory').value) || 0) + (parseInt(document.getElementById('groupTheory').value) || 0) + (parseInt(document.getElementById('lmsActivityTheory').value) || 0) + (parseInt(document.getElementById('examTheory').value) || 0);
+            const selfOtherPractical = (parseInt(document.getElementById('selfStudyPractical').value) || 0) + (parseInt(document.getElementById('groupPractical').value) || 0) + (parseInt(document.getElementById('lmsActivityPractical').value) || 0) + (parseInt(document.getElementById('examPractical').value) || 0);
+            const selfOtherSelfStudy = (parseInt(document.getElementById('selfStudySelfStudy').value) || 0) + (parseInt(document.getElementById('groupSelfStudy').value) || 0) + (parseInt(document.getElementById('lmsActivitySelfStudy').value) || 0) + (parseInt(document.getElementById('examSelfStudy').value) || 0);
+            const selfOtherTotal = (selfOtherTheory * 50 / 60) + (selfOtherPractical * 50 / 60) + (selfOtherSelfStudy * 50 / 60);
+            document.getElementById('selfOtherTheoryTotal').textContent = selfOtherTheory;
+            document.getElementById('selfOtherPracticalTotal').textContent = selfOtherPractical;
+            document.getElementById('selfOtherSelfStudyTotal').textContent = selfOtherSelfStudy;
+            document.getElementById('selfOtherTotal').textContent = Math.round(selfOtherTotal);
         }
 
         // Hàm tải file Word
@@ -332,7 +377,7 @@
                                     <th>Lý thuyết</th>
                                     <th>TH/TN/TL</th>
                                     <th>Tự học, tự nghiên cứu</th>
-                                    <th>Tổng</th>
+                                    <th>Tổng (giờ)</th>
                                 </tr>
                             </thead>
                             <tbody>
