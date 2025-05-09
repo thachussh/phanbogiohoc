@@ -52,14 +52,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="border border-gray-300 p-2 font-semibold" colspan="5">Số giờ giảng dạy trực diện, trực tuyến</td>
-                    </tr>
-                    <tr class="bg-gray-100 font-semibold">
-                        <td class="border border-gray-300 p-2">Tổng Số giờ giảng dạy trực diện, trực tuyến</td>
-                        <td class="border border-gray-300 p-2 text-center" id="directOnlineTheoryTotal">0</td>
-                        <td class="border border-gray-300 p-2 text-center" id="directOnlinePracticalTotal">0</td>
-                        <td class="border border-gray-300 p-2 text-center" id="directOnlineSelfStudyTotal">0</td>
-                        <td class="border border-gray-300 p-2 text-center" id="directOnlineTotal">0</td>
+                        <td class="border border-gray-300 p-2 font-bold" colspan="5">Số giờ giảng dạy trực diện, trực tuyến</td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 p-2 pl-4">Trực diện (tại phòng học)</td>
@@ -76,13 +69,6 @@
                         <td class="border border-gray-300 p-2 text-center" id="onlineTotal">0</td>
                     </tr>
                     <tr>
-                        <td class="border border-gray-300 p-2 pl-4">LMS (có hướng dẫn)</td>
-                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuideTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
-                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuidePractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
-                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuideSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
-                        <td class="border border-gray-300 p-2 text-center" id="lmsGuideTotal">0</td>
-                    </tr>
-                    <tr>
                         <td class="border border-gray-300 p-2 pl-4">Đi thực tế, trải nghiệm</td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="fieldTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="fieldPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
@@ -90,14 +76,21 @@
                         <td class="border border-gray-300 p-2 text-center" id="fieldTotal">0</td>
                     </tr>
                     <tr>
-                        <td class="border border-gray-300 p-2 font-semibold" colspan="5">Số giờ tự học và khác</td>
+                        <td class="border border-gray-300 p-2 pl-4">LMS (có hướng dẫn)</td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuideTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuidePractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center"><input type="number" id="lmsGuideSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
+                        <td class="border border-gray-300 p-2 text-center" id="lmsGuideTotal">0</td>
                     </tr>
                     <tr class="bg-gray-100 font-semibold">
-                        <td class="border border-gray-300 p-2">Tổng Số giờ tự học và khác</td>
-                        <td class="border border-gray-300 p-2 text-center" id="selfOtherTheoryTotal">0</td>
-                        <td class="border border-gray-300 p-2 text-center" id="selfOtherPracticalTotal">0</td>
-                        <td class="border border-gray-300 p-2 text-center" id="selfOtherSelfStudyTotal">0</td>
-                        <td class="border border-gray-300 p-2 text-center" id="selfOtherTotal">0</td>
+                        <td class="border border-gray-300 p-2">Tổng Số giờ giảng dạy trực diện, trực tuyến</td>
+                        <td class="border border-gray-300 p-2 text-center" id="directOnlineTheoryTotal">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="directOnlinePracticalTotal">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="directOnlineSelfStudyTotal">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="directOnlineTotal">0</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-2 font-bold" colspan="5">Số giờ tự học và khác</td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 p-2 pl-4">Tự học, tự nghiên cứu</td>
@@ -107,7 +100,7 @@
                         <td class="border border-gray-300 p-2 text-center" id="selfStudyTotal">0</td>
                     </tr>
                     <tr>
-                        <td class="block border border-gray-300 p-2 pl-4">Làm việc nhóm</td>
+                        <td class="border border-gray-300 p-2 pl-4">Làm việc nhóm</td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupTheory" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="groupSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
@@ -126,6 +119,13 @@
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="examPractical" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center"><input type="number" id="examSelfStudy" min="0" value="0" class="w-20 border border-gray-300 rounded p-1" oninput="updateFromTable()"></td>
                         <td class="border border-gray-300 p-2 text-center" id="examTotal">0</td>
+                    </tr>
+                    <tr class="bg-gray-100 font-semibold">
+                        <td class="border border-gray-300 p-2">Tổng Số giờ tự học và khác</td>
+                        <td class="border border-gray-300 p-2 text-center" id="selfOtherTheoryTotal">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="selfOtherPracticalTotal">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="selfOtherSelfStudyTotal">0</td>
+                        <td class="border border-gray-300 p-2 text-center" id="selfOtherTotal">0</td>
                     </tr>
                     <tr class="bg-gray-100 font-semibold">
                         <td class="border border-gray-300 p-2">Tổng</td>
@@ -365,6 +365,7 @@
                             th, td { border: 1px solid black; padding: 8px; text-align: left; }
                             th { background-color: #f2f2f2; text-align: center; }
                             .total-row td { font-weight: bold; }
+                            .bold { font-weight: bold; }
                         </style>
                     </head>
                     <body>
@@ -381,18 +382,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td colspan="5" class="font-semibold">Số giờ giảng dạy trực diện, trực tuyến</td></tr>
-                                <tr class="total-row"><td>Tổng Số giờ giảng dạy trực diện, trực tuyến</td><td>${document.getElementById('directOnlineTheoryTotal').textContent || 0}</td><td>${document.getElementById('directOnlinePracticalTotal').textContent || 0}</td><td>${document.getElementById('directOnlineSelfStudyTotal').textContent || 0}</td><td>${document.getElementById('directOnlineTotal').textContent || 0}</td></tr>
+                                <tr><td class="bold" colspan="5">Số giờ giảng dạy trực diện, trực tuyến</td></tr>
                                 <tr><td>Trực diện (tại phòng học)</td><td>${document.getElementById('directTheory').value || 0}</td><td>${document.getElementById('directPractical').value || 0}</td><td>${document.getElementById('directSelfStudy').value || 0}</td><td>${document.getElementById('directTotal').textContent || 0}</td></tr>
                                 <tr><td>Trực tuyến (đồng bộ hoặc không đồng bộ)</td><td>${document.getElementById('onlineTheory').value || 0}</td><td>${document.getElementById('onlinePractical').value || 0}</td><td>${document.getElementById('onlineSelfStudy').value || 0}</td><td>${document.getElementById('onlineTotal').textContent || 0}</td></tr>
-                                <tr><td>LMS (có hướng dẫn)</td><td>${document.getElementById('lmsGuideTheory').value || 0}</td><td>${document.getElementById('lmsGuidePractical').value || 0}</td><td>${document.getElementById('lmsGuideSelfStudy').value || 0}</td><td>${document.getElementById('lmsGuideTotal').textContent || 0}</td></tr>
                                 <tr><td>Đi thực tế, trải nghiệm</td><td>${document.getElementById('fieldTheory').value || 0}</td><td>${document.getElementById('fieldPractical').value || 0}</td><td>${document.getElementById('fieldSelfStudy').value || 0}</td><td>${document.getElementById('fieldTotal').textContent || 0}</td></tr>
-                                <tr><td colspan="5" class="font-semibold">Số giờ tự học và khác</td></tr>
-                                <tr class="total-row"><td>Tổng Số giờ tự học và khác</td><td>${document.getElementById('selfOtherTheoryTotal').textContent || 0}</td><td>${document.getElementById('selfOtherPracticalTotal').textContent || 0}</td><td>${document.getElementById('selfOtherSelfStudyTotal').textContent || 0}</td><td>${document.getElementById('selfOtherTotal').textContent || 0}</td></tr>
+                                <tr><td>LMS (có hướng dẫn)</td><td>${document.getElementById('lmsGuideTheory').value || 0}</td><td>${document.getElementById('lmsGuidePractical').value || 0}</td><td>${document.getElementById('lmsGuideSelfStudy').value || 0}</td><td>${document.getElementById('lmsGuideTotal').textContent || 0}</td></tr>
+                                <tr class="total-row"><td>Tổng Số giờ giảng dạy trực diện, trực tuyến</td><td>${document.getElementById('directOnlineTheoryTotal').textContent || 0}</td><td>${document.getElementById('directOnlinePracticalTotal').textContent || 0}</td><td>${document.getElementById('directOnlineSelfStudyTotal').textContent || 0}</td><td>${document.getElementById('directOnlineTotal').textContent || 0}</td></tr>
+                                <tr><td class="bold" colspan="5">Số giờ tự học và khác</td></tr>
                                 <tr><td>Tự học, tự nghiên cứu</td><td>${document.getElementById('selfStudyTheory').value || 0}</td><td>${document.getElementById('selfStudyPractical').value || 0}</td><td>${document.getElementById('selfStudySelfStudy').value || 0}</td><td>${document.getElementById('selfStudyTotal').textContent || 0}</td></tr>
                                 <tr><td>Làm việc nhóm</td><td>${document.getElementById('groupTheory').value || 0}</td><td>${document.getElementById('groupPractical').value || 0}</td><td>${document.getElementById('groupSelfStudy').value || 0}</td><td>${document.getElementById('groupTotal').textContent || 0}</td></tr>
                                 <tr><td>Hoạt động học tập trên LMS</td><td>${document.getElementById('lmsActivityTheory').value || 0}</td><td>${document.getElementById('lmsActivityPractical').value || 0}</td><td>${document.getElementById('lmsActivitySelfStudy').value || 0}</td><td>${document.getElementById('lmsActivityTotal').textContent || 0}</td></tr>
                                 <tr><td>Ôn thi, dự thi, kiểm tra</td><td>${document.getElementById('examTheory').value || 0}</td><td>${document.getElementById('examPractical').value || 0}</td><td>${document.getElementById('examSelfStudy').value || 0}</td><td>${document.getElementById('examTotal').textContent || 0}</td></tr>
+                                <tr class="total-row"><td>Tổng Số giờ tự học và khác</td><td>${document.getElementById('selfOtherTheoryTotal').textContent || 0}</td><td>${document.getElementById('selfOtherPracticalTotal').textContent || 0}</td><td>${document.getElementById('selfOtherSelfStudyTotal').textContent || 0}</td><td>${document.getElementById('selfOtherTotal').textContent || 0}</td></tr>
                                 <tr class="total-row"><td>Tổng</td><td>${document.getElementById('totalTheory').textContent || 0}</td><td>${document.getElementById('totalPractical').textContent || 0}</td><td>${document.getElementById('totalSelfStudy').textContent || 0}</td><td>${document.getElementById('totalAll').textContent || 0}</td></tr>
                             </tbody>
                         </table>
