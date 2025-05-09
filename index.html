@@ -30,10 +30,10 @@
                 </div>
                 <div class="mt-2">
                     <label class="block text-sm font-medium text-gray-700">Tự học (tiết):</label>
-                    <input type="number" id="selfStudyHours" min="0" value="0" class="mt-1 block w-1/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
+                    <span id="selfStudyHours" class="mt-1 block w-1/12 text-gray-700">0</span>
                 </div>
             </div>
-            <p id="errorMessage" class="text-red-500 mt-2 hidden">Lỗi: Tổng tín chỉ không khớp hoặc tổng tiết không khớp với số tín chỉ (1 TC = 50 tiết)!</p>
+            <p id="errorMessage" class="text-red-500 mt-2 hidden">Lỗi: Tổng tín chỉ không khớp!</p>
         </div>
 
         <!-- Bảng phân bổ giờ -->
@@ -147,14 +147,16 @@
             const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
             const theoryCredits = parseInt(document.getElementById('theoryCredits').value) || 0;
             const practicalCredits = parseInt(document.getElementById('practicalCredits').value) || 0;
-            const selfStudySections = parseInt(document.getElementById('selfStudyHours').value) || 0;
 
             const theorySections = theoryCredits * 15;
             const practicalSections = practicalCredits * 30;
-            const totalSections = totalCredits * 50;
             const totalHours = totalCredits * 50;
 
-            const selfStudyHours = Math.round((selfStudySections * 50) / 60);
+            const theoryHours = theorySections * 50 / 60;
+            const practicalHours = practicalSections * 50 / 60;
+            const teachingHours = theoryHours + practicalHours;
+            const selfStudyHours = totalHours - teachingHours;
+            const selfStudySections = Math.round(selfStudyHours * 60 / 50);
 
             const errorMessage = document.getElementById('errorMessage');
             if (theoryCredits + practicalCredits !== totalCredits) {
@@ -179,10 +181,13 @@
                 document.getElementById('totalPractical').textContent = 0;
                 document.getElementById('totalSelfStudy').textContent = 0;
                 document.getElementById('totalAll').textContent = 0;
+                document.getElementById('selfStudyHours').textContent = 0;
                 return;
             } else {
                 errorMessage.classList.add('hidden');
             }
+
+            document.getElementById('selfStudyHours').textContent = selfStudySections;
 
             document.getElementById('directTheory').value = theorySections;
             document.getElementById('directPractical').value = practicalSections;
@@ -225,14 +230,16 @@
             const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
             const theoryCredits = parseInt(document.getElementById('theoryCredits').value) || 0;
             const practicalCredits = parseInt(document.getElementById('practicalCredits').value) || 0;
-            const selfStudySections = parseInt(document.getElementById('selfStudyHours').value) || 0;
 
             const theorySections = theoryCredits * 15;
             const practicalSections = practicalCredits * 30;
-            const totalSections = totalCredits * 50;
             const totalHours = totalCredits * 50;
 
-            const selfStudyHours = Math.round((selfStudySections * 50) / 60);
+            const theoryHours = theorySections * 50 / 60;
+            const practicalHours = practicalSections * 50 / 60;
+            const teachingHours = theoryHours + practicalHours;
+            const selfStudyHours = totalHours - teachingHours;
+            const selfStudySections = Math.round(selfStudyHours * 60 / 50);
 
             const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
             let totalTheory = 0, totalPractical = 0, totalSelfStudy = 0;
@@ -253,13 +260,14 @@
             document.getElementById('totalTheory').textContent = totalTheory;
             document.getElementById('totalPractical').textContent = totalPractical;
             document.getElementById('totalSelfStudy').textContent = totalSelfStudy;
-            document.getElementById('totalAll').textContent = totalTheory + totalPractical + totalSelfStudy;
+
+            const totalHoursCalculated = (totalTheory * 50 / 60) + (totalPractical * 50 / 60) + (totalSelfStudy * 50 / 60);
+            document.getElementById('totalAll').textContent = Math.round(totalHoursCalculated);
 
             const errorMessage = document.getElementById('errorMessage');
-            const calculatedTotal = totalTheory + totalPractical + totalSelfStudy;
-            if (theoryCredits + practicalCredits !== totalCredits || calculatedTotal !== totalSections) {
+            if (theoryCredits + practicalCredits !== totalCredits || Math.round(totalHoursCalculated) !== totalHours) {
                 errorMessage.classList.remove('hidden');
-                errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits}) hoặc tổng tiết không khớp với số tín chỉ (1 TC = 50 tiết)! Tính được: ${calculatedTotal}, Nên là: ${totalSections}`;
+                errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits}) hoặc tổng giờ không khớp với số tín chỉ (1 TC = 50 giờ)! Tính được: ${Math.round(totalHoursCalculated)} giờ, Nên là: ${totalHours} giờ`;
             } else {
                 errorMessage.classList.add('hidden');
             }
@@ -285,6 +293,9 @@
 
         // Hàm tính tổng
         function updateTotals() {
+            const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
+            const totalHours = totalCredits * 50;
+
             const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
             let totalTheory = 0, totalPractical = 0, totalSelfStudy = 0;
 
@@ -304,7 +315,9 @@
             document.getElementById('totalTheory').textContent = totalTheory;
             document.getElementById('totalPractical').textContent = totalPractical;
             document.getElementById('totalSelfStudy').textContent = totalSelfStudy;
-            document.getElementById('totalAll').textContent = totalTheory + totalPractical + totalSelfStudy;
+
+            const totalHoursCalculated = (totalTheory * 50 / 60) + (totalPractical * 50 / 60) + (totalSelfStudy * 50 / 60);
+            document.getElementById('totalAll').textContent = Math.round(totalHoursCalculated);
 
             const directOnlineTheory = (parseInt(document.getElementById('directTheory').value) || 0) + (parseInt(document.getElementById('onlineTheory').value) || 0) + (parseInt(document.getElementById('fieldTheory').value) || 0);
             const directOnlinePractical = (parseInt(document.getElementById('directPractical').value) || 0) + (parseInt(document.getElementById('onlinePractical').value) || 0) + (parseInt(document.getElementById('fieldPractical').value) || 0);
@@ -324,12 +337,10 @@
             document.getElementById('selfOtherSelfStudyTotal').textContent = selfOtherSelfStudy;
             document.getElementById('selfOtherTotal').textContent = selfOtherTotal;
 
-            const calculatedTotal = totalTheory + totalPractical + totalSelfStudy;
-            if (calculatedTotal !== totalSections) {
+            const errorMessage = document.getElementById('errorMessage');
+            if (Math.round(totalHoursCalculated) !== totalHours) {
                 errorMessage.classList.remove('hidden');
-                errorMessage.textContent = `Lỗi: Tổng tiết không khớp với số tín chỉ (1 TC = 50 tiết)! Tính được: ${calculatedTotal}, Nên là: ${totalSections}`;
-            } else {
-                errorMessage.classList.add('hidden');
+                errorMessage.textContent = `Lỗi: Tổng giờ không khớp với số tín chỉ (1 TC = 50 giờ)! Tính được: ${Math.round(totalHoursCalculated)} giờ, Nên là: ${totalHours} giờ`;
             }
         }
 
@@ -356,7 +367,7 @@
                     </head>
                     <body>
                         <h1>Phân Bổ Các Loại Giờ</h1>
-                        <p>Số tín chỉ: ${document.getElementById('totalCredits').value || 0}, trong đó: Lý thuyết: ${document.getElementById('theoryCredits').value || 0} TC, TH/TN/TL: ${document.getElementById('practicalCredits').value || 0} TC, Tự học: ${document.getElementById('selfStudyHours').value || 0} tiết</p>
+                        <p>Số tín chỉ: ${document.getElementById('totalCredits').value || 0}, trong đó: Lý thuyết: ${document.getElementById('theoryCredits').value || 0} TC, TH/TN/TL: ${document.getElementById('practicalCredits').value || 0} TC, Tự học: ${document.getElementById('selfStudyHours').textContent || 0} tiết</p>
                         <table>
                             <thead>
                                 <tr>
