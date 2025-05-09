@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân bổ các loại giờ</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Thay docx bằng html-docx-js -->
     <script src="https://unpkg.com/html-docx-js@0.3.1/dist/html-docx.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
@@ -34,7 +33,7 @@
                     <input type="number" id="selfStudyHours" min="0" value="0" class="mt-1 block w-1/12 border border-gray-300 rounded-md p-2" oninput="updateTable()">
                 </div>
             </div>
-            <p id="errorMessage" class="text-red-500 mt-2 hidden">Lỗi: Tổng tín chỉ không khớp hoặc số giờ tự học không hợp lệ!</p>
+            <p id="errorMessage" class="text-red-500 mt-2 hidden">Lỗi: Tổng tín chỉ không khớp hoặc tổng giờ không khớp với số tín chỉ (1 TC = 50 giờ)!</p>
         </div>
 
         <!-- Bảng phân bổ giờ -->
@@ -138,16 +137,15 @@
             const selfStudyHours = parseInt(document.getElementById('selfStudyHours').value) || 0;
 
             // Tính toán số giờ theo quy định
-            const theoryHours = theoryCredits * 15; // 15 giờ/tín chỉ lý thuyết
-            const practicalHours = practicalCredits * 30; // 30 giờ/tín chỉ thực hành
-            const totalHours = totalCredits * 50; // 50 giờ học tập định mức/tín chỉ
-            const requiredSelfStudy = totalHours - theoryHours - practicalHours; // Giờ tự học cần thiết
+            const theoryHours = theoryCredits * 15; // 15 giờ/tín chỉ lý thuyết (50 phút)
+            const practicalHours = practicalCredits * 30; // 30 giờ/tín chỉ thực hành (50 phút)
+            const totalHours = totalCredits * 50; // 50 giờ học tập định mức/tín chỉ (60 phút)
 
             // Kiểm tra ràng buộc
             const errorMessage = document.getElementById('errorMessage');
-            if (theoryCredits + practicalCredits !== totalCredits || selfStudyHours < requiredSelfStudy) {
+            if (theoryCredits + practicalCredits !== totalCredits) {
                 errorMessage.classList.remove('hidden');
-                errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits}) hoặc số giờ tự học (${selfStudyHours}) không đủ (${requiredSelfStudy} giờ cần thiết)!`;
+                errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits})!`;
                 // Đặt giá trị mặc định trong bảng
                 const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
                 fields.forEach(field => {
@@ -222,10 +220,9 @@
             const selfStudyHours = parseInt(document.getElementById('selfStudyHours').value) || 0;
 
             // Tính toán số giờ theo quy định
-            const theoryHours = theoryCredits * 15; // 15 giờ/tín chỉ lý thuyết
-            const practicalHours = practicalCredits * 30; // 30 giờ/tín chỉ thực hành
-            const totalHours = totalCredits * 50; // 50 giờ học tập định mức/tín chỉ
-            const requiredSelfStudy = totalHours - theoryHours - practicalHours; // Giờ tự học cần thiết
+            const theoryHours = theoryCredits * 15; // 15 giờ/tín chỉ lý thuyết (50 phút)
+            const practicalHours = practicalCredits * 30; // 30 giờ/tín chỉ thực hành (50 phút)
+            const totalHours = totalCredits * 50; // 50 giờ học tập định mức/tín chỉ (60 phút)
 
             // Lấy tất cả giá trị trong bảng
             const fields = ['direct', 'online', 'lmsGuide', 'field', 'selfStudy', 'group', 'lmsActivity', 'exam'];
@@ -237,10 +234,14 @@
                 const theory = parseInt(document.getElementById(`${field}Theory`).value) || 0;
                 const practical = parseInt(document.getElementById(`${field}Practical`).value) || 0;
                 const selfStudy = parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+
+                // Quy đổi cột Tổng: Lý thuyết và TH/TN/TL (50 phút) sang giờ 60 phút
+                const total = (theory * 50 / 60) + (practical * 50 / 60) + selfStudy;
+                document.getElementById(`${field}Total`).textContent = Math.round(total);
+
                 totalTheory += theory;
                 totalPractical += practical;
                 totalSelfStudy += selfStudy;
-                document.getElementById(`${field}Total`).textContent = theory + practical + selfStudy;
             });
 
             // Cập nhật tổng
@@ -251,13 +252,10 @@
 
             // Kiểm tra ràng buộc
             const errorMessage = document.getElementById('errorMessage');
-            if (theoryCredits + practicalCredits !== totalCredits ||
-                totalTheory !== theoryHours ||
-                totalPractical !== practicalHours ||
-                totalSelfStudy !== selfStudyHours ||
-                (totalTheory + totalPractical + totalSelfStudy) !== totalHours) {
+            const calculatedTotal = totalTheory + totalPractical + totalSelfStudy;
+            if (theoryCredits + practicalCredits !== totalCredits || calculatedTotal !== totalHours) {
                 errorMessage.classList.remove('hidden');
-                errorMessage.textContent = `Lỗi: Tổng giờ không khớp! Lý thuyết: ${totalTheory}/${theoryHours}, TH/TN/TL: ${totalPractical}/${practicalHours}, Tự học: ${totalSelfStudy}/${selfStudyHours}, Tổng: ${totalTheory + totalPractical + totalSelfStudy}/${totalHours}`;
+                errorMessage.textContent = `Lỗi: Tổng tín chỉ không khớp (${theoryCredits} + ${practicalCredits} ≠ ${totalCredits}) hoặc tổng giờ không khớp với số tín chỉ (1 TC = 50 giờ)! Tính được: ${calculatedTotal}, Nên là: ${totalHours}`;
             } else {
                 errorMessage.classList.add('hidden');
             }
@@ -274,16 +272,32 @@
                 const theory = parseInt(document.getElementById(`${field}Theory`).value) || 0;
                 const practical = parseInt(document.getElementById(`${field}Practical`).value) || 0;
                 const selfStudy = parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+
+                // Quy đổi cột Tổng: Lý thuyết và TH/TN/TL (50 phút) sang giờ 60 phút
+                const total = (theory * 50 / 60) + (practical * 50 / 60) + selfStudy;
+                document.getElementById(`${field}Total`).textContent = Math.round(total);
+
                 totalTheory += theory;
                 totalPractical += practical;
                 totalSelfStudy += selfStudy;
-                document.getElementById(`${field}Total`).textContent = theory + practical + selfStudy;
             });
 
             document.getElementById('totalTheory').textContent = totalTheory;
             document.getElementById('totalPractical').textContent = totalPractical;
             document.getElementById('totalSelfStudy').textContent = totalSelfStudy;
             document.getElementById('totalAll').textContent = totalTheory + totalPractical + totalSelfStudy;
+
+            // Kiểm tra ràng buộc
+            const totalCredits = parseInt(document.getElementById('totalCredits').value) || 0;
+            const totalHours = totalCredits * 50;
+            const errorMessage = document.getElementById('errorMessage');
+            const calculatedTotal = totalTheory + totalPractical + totalSelfStudy;
+            if (calculatedTotal !== totalHours) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.textContent = `Lỗi: Tổng giờ không khớp với số tín chỉ (1 TC = 50 giờ)! Tính được: ${calculatedTotal}, Nên là: ${totalHours}`;
+            } else {
+                errorMessage.classList.add('hidden');
+            }
         }
 
         // Hàm tải file Word
