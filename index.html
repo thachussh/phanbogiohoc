@@ -152,11 +152,10 @@
             const theorySections = theoryCredits * 15;
             const practicalSections = practicalCredits * 30;
             const totalHours = totalCredits * 50;
-            const selfStudySections = totalCredits * 30; // 30 tiết/tín chỉ
-            const selfStudyHours = selfStudySections * 50 / 60;
+            const selfStudySections = totalCredits * 30; // 30 tiết/tín chỉ (mặc định ban đầu)
 
             const teachingHours = (theorySections * 50 / 60) + (practicalSections * 50 / 60);
-            const currentTotalHours = teachingHours + selfStudyHours;
+            const currentTotalHours = teachingHours + (selfStudySections * 50 / 60);
             const hoursNeeded = Math.max(0, totalHours - currentTotalHours);
 
             const errorMessage = document.getElementById('errorMessage');
@@ -274,6 +273,14 @@
             document.getElementById('selfOtherPracticalTotal').textContent = selfOtherPractical;
             document.getElementById('selfOtherSelfStudyTotal').textContent = selfOtherSelfStudy;
             document.getElementById('selfOtherTotal').textContent = Math.round(selfOtherTotal);
+
+            // Cập nhật tổng số tiết tự học dựa trên cột "Tự học, tự nghiên cứu"
+            const selfStudyFields = ['selfStudy', 'group', 'lmsActivity', 'exam'];
+            let totalSelfStudySections = 0;
+            selfStudyFields.forEach(field => {
+                totalSelfStudySections += parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+            });
+            document.getElementById('selfStudyHours').textContent = totalSelfStudySections;
         }
 
         // Hàm reset bảng
@@ -344,6 +351,14 @@
             document.getElementById('selfOtherPracticalTotal').textContent = selfOtherPractical;
             document.getElementById('selfOtherSelfStudyTotal').textContent = selfOtherSelfStudy;
             document.getElementById('selfOtherTotal').textContent = Math.round(selfOtherTotal);
+
+            // Cập nhật tổng số tiết tự học
+            const selfStudyFields = ['selfStudy', 'group', 'lmsActivity', 'exam'];
+            let totalSelfStudySections = 0;
+            selfStudyFields.forEach(field => {
+                totalSelfStudySections += parseInt(document.getElementById(`${field}SelfStudy`).value) || 0;
+            });
+            document.getElementById('selfStudyHours').textContent = totalSelfStudySections;
         }
 
         // Hàm tải file Word
